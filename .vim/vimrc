@@ -1,0 +1,60 @@
+" Fixes some things when I used fish
+set shell=/bin/bash
+
+execute pathogen#infect()
+
+" to make lightline.vim show and for colors
+set laststatus=2
+if !has('gui_running')
+	set t_Co=256
+endif
+
+colorscheme elflord
+
+" Mode displayed by lightline
+set noshowmode
+
+" Highlight the current line
+"set cursorline
+"hi CursorLine term=bold cterm=bold ctermbg=240
+
+" Configure lightline
+let g:lightline = {
+	\ 'colorscheme': 'wombat',
+	\ 'component': {
+	\   'readonly': '%{&readonly?"":""}',
+	\ },
+	\ 'separator': { 'left': '', 'right': '' },
+	\ 'subseparator': { 'left': '', 'right': '' },
+	\ }
+
+" Vim can recognize files and can load plugins
+filetype on
+filetype plugin on
+
+set showcmd
+set wildmenu
+set nowrap
+filetype indent on
+set autoindent noexpandtab tabstop=4 shiftwidth=4
+
+" Mark column limit and force new line when typing past
+set tw=80
+set cc=80
+
+" pretty much always want syntax highligting
+syntax on
+
+" If we were using X11, this would use its clipboard
+set clipboard=unnamedplus
+
+
+autocmd BufNewFile *.c 0r ~/.vim/template.c
+
+" Invisible characters
+" use "set list" to turn on and "set nolist" to turn off
+set listchars=eol:¬,tab:»\ ,space:·
+
+" Set the swap and backup dir to something not annoying
+set directory=~/.vim/.swp,/tmp
+set backupdir=~/.vim/.backup,/tmp
