@@ -15,3 +15,10 @@ end
 function fish_right_prompt
 	env FISH_VERSION=$FISH_VERSION PROMPTLINE_LAST_EXIT_CODE=$status bash ~/.promptline.sh right
 end
+
+# Start X at login
+if status is-interactive
+	if test -z "$DISPLAY" -a $XDG_VTNR = 1
+		exec startx -- -keeptty
+	end
+end
