@@ -14,10 +14,6 @@ colorscheme elflord
 " Mode displayed by lightline
 set noshowmode
 
-" Highlight the current line
-"set cursorline
-"hi CursorLine term=bold cterm=bold ctermbg=240
-
 " Configure lightline
 let g:lightline = {
 	\ 'colorscheme': 'wombat',
@@ -32,18 +28,23 @@ let g:lightline = {
 filetype on
 filetype plugin on
 
+" pretty much always want syntax highligting
+syntax on
+
 set showcmd
 set wildmenu
 set nowrap
 filetype indent on
 set autoindent noexpandtab tabstop=4 shiftwidth=4
 
+" Highlight the current line
+set cursorline
+hi CursorLine term=bold cterm=bold ctermbg=236
+
 " Mark column limit and force new line when typing past
 set tw=80
 set cc=80
-
-" pretty much always want syntax highligting
-syntax on
+hi ColorColumn ctermbg=240
 
 " If we were using X11, this would use its clipboard. Vim needs to be compiled
 " with X11 and xterm_clipboard for this to work. see :version
