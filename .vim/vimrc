@@ -45,9 +45,9 @@ set cc=80
 " pretty much always want syntax highligting
 syntax on
 
-" If we were using X11, this would use its clipboard
+" If we were using X11, this would use its clipboard. Vim needs to be compiled
+" with X11 and xterm_clipboard for this to work. see :version
 set clipboard=unnamedplus
-
 
 autocmd BufNewFile *.c 0r ~/.vim/template.c
 
