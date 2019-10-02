@@ -49,7 +49,9 @@ syntax on
 " with X11 and xterm_clipboard for this to work. see :version
 set clipboard=unnamedplus
 
+" Template files
 autocmd BufNewFile *.c 0r ~/.vim/template.c
+autocmd BufNewFile *.py 0r ~/.vim/template.py
 
 " Invisible characters
 " use "set list" to turn on and "set nolist" to turn off
