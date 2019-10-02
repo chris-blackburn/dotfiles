@@ -14,6 +14,13 @@ colorscheme elflord
 " Mode displayed by lightline
 set noshowmode
 
+let g:promptline_preset = {
+	\'a' : [ promptline#slices#host() ],
+	\'b' : [ promptline#slices#user() ],
+	\'c' : [ promptline#slices#cwd() ],
+	\'y' : [ promptline#slices#vcs_branch() ],
+	\'warn' : [ promptline#slices#last_exit_code() ]}
+
 " Configure lightline
 let g:lightline = {
 	\ 'colorscheme': 'wombat',
@@ -31,11 +38,16 @@ filetype plugin on
 " pretty much always want syntax highligting
 syntax on
 
+set ignorecase
+set hlsearch
+set incsearch
 set showcmd
 set wildmenu
 set nowrap
 filetype indent on
 set autoindent noexpandtab tabstop=4 shiftwidth=4
+set nolazyredraw
+set ttyfast
 
 " Highlight the current line
 set cursorline
