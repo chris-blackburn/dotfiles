@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 echo "Initializing Submodules"
 git submodule init && git submodule update
@@ -19,5 +18,12 @@ ln -s "$PWD/.tmuxline.sh" ~/.tmuxline.sh
 ln -s "$PWD/.promptline.sh" ~/.promptline.sh
 mkdir -p ~/.config/fish
 ln -s "$PWD/.config.fish" ~/.config/fish/config.fish
+
+echo "Making GDB cool"
+if test -f ~/.gdbinit; then
+	echo "GDB already cool"
+else
+	wget -P ~ https://git.io/.gdbinit
+fi
 
 echo "Done"
