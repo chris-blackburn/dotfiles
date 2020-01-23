@@ -28,3 +28,5 @@ else
 fi
 
 echo "Done"
+echo "Note: scrot not automatically installed, do that yourself"
+echo "Make sure to go to https://github.com/powerline/fonts.git to get some good fonts"
