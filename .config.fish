@@ -7,6 +7,8 @@ alias ll="ls -l"
 alias vi="vim"
 alias tmux="tmux -2"
 
+alias open xdg-open
+
 # promptline
 function fish_prompt
 	env FISH_VERSION=$FISH_VERSION PROMPTLINE_LAST_EXIT_CODE=$status bash ~/.promptline.sh left

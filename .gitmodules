@@ -13,6 +13,3 @@
 [submodule ".tmux/plugins/tmux-resurrect"]
 	path = .tmux/plugins/tmux-resurrect
 	url = https://github.com/tmux-plugins/tmux-resurrect.git
-[submodule "scrot"]
-	path = scrot
-	url = https://github.com/dreamer/scrot.git

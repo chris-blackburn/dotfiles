@@ -1,12 +1,18 @@
 #!/bin/bash
 
+test -f "$PWD/install.sh" || (echo "Please run this script within the dotfiles directory"; exit 1)
+
 echo "Initializing Submodules"
-git submodule update --init --progress
+git submodule update --init || (echo "Failed to initialize submodules"; exit 1)
+
+if [ ! -d "./dotbak" ]; then
+	mkdir dotbak
+fi
 
 echo "Backing up original files"
 for f in ~/.bash_profile ~/.bashrc ~/.vim ~/.tmux.conf ~/.tmuxline.sh \
 	~/.promptline.sh ~/.config/fish/config.fish; do
-	mv "$f" "$f".dotbak
+	mv "$f" "./dotbak/$f"
 done
 
 echo "Linking files to appropriate locations"
@@ -28,5 +34,4 @@ else
 fi
 
 echo "Done"
-echo "Note: scrot not automatically installed, do that yourself"
 echo "Make sure to go to https://github.com/powerline/fonts.git to get some good fonts"
