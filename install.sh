@@ -12,7 +12,7 @@ fi
 echo "Backing up original files"
 for f in ~/.bash_profile ~/.bashrc ~/.vim ~/.tmux.conf ~/.tmuxline.sh \
 	~/.promptline.sh ~/.config/fish/config.fish; do
-	mv "$f" "./dotbak/$f"
+	mv "$f" "./dotbak/"$(basename -- "$f")
 done
 
 echo "Linking files to appropriate locations"
