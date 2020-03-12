@@ -57,14 +57,25 @@ hi CursorLine term=bold cterm=bold ctermbg=236
 set tw=80
 set cc=80
 hi ColorColumn ctermbg=240
+set nojoinspaces
 
 " If we were using X11, this would use its clipboard. Vim needs to be compiled
 " with X11 and xterm_clipboard for this to work. see :version
 set clipboard=unnamedplus
 
+" send deleted and changed text to black hole register
+nnoremap d "_d
+nnoremap D "_D
+vnoremap d "_d
+vnoremap D "_D
+
+nnoremap C "_C
+vnoremap C "_C
+
 " Template files
-autocmd BufNewFile *.c 0r ~/.vim/template.c
-autocmd BufNewFile *.py 0r ~/.vim/template.py
+autocmd BufNewFile *.c 0r ~/.vim/templates/template.c
+autocmd BufNewFile *.py 0r ~/.vim/templates/template.py
+autocmd BufNewFile *.sh 0r ~/.vim/templates/template.sh
 
 " Invisible characters
 " use "set list" to turn on and "set nolist" to turn off
@@ -73,3 +84,7 @@ set listchars=eol:¬,tab:»\ ,space:·
 " Set the swap and backup dir to something not annoying
 set directory=~/.vim/.swp,/tmp
 set backupdir=~/.vim/.backup,/tmp
+
+" I don't want mouse
+set mouse=
+set ttymouse=
