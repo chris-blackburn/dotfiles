@@ -3,9 +3,11 @@ set fish_greeting ''
 set --global --export TERM xterm-256color
 set -x --global EDITOR vim
 
+alias ls="ls --color=auto"
 alias ll="ls -l"
 alias vi="vim"
 alias tmux="tmux -2"
+alias se="sudoedit"
 
 alias open xdg-open
 
