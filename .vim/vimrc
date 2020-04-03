@@ -50,8 +50,16 @@ inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
   \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-inoremap <expr> <C-Space> <C-x><C-o>
+inoremap <C-Space> <C-x><C-o>
 imap <C-@> <C-Space>
+
+" File browsing (:edit directory), |netrw-browse-maps| for mappings
+" Note: CTRL-^ will edit the alternate file (if you just opened a file from the
+" netrw browser, it will re-open the browser).
+let g:netrw_banner=0
+let g:netrw_banner=4 "open to the left
+let g:netrw_altv=1 "open splits to the right by default
+let g:netrw_liststyle=3 " tree view
 
 set ignorecase
 set hlsearch
