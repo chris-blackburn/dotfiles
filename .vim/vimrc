@@ -35,8 +35,23 @@ let g:lightline = {
 filetype on
 filetype plugin on
 
-" pretty much always want syntax highligting
+" pretty much always want Syntax highlighting
 syntax on
+
+nnoremap <F7> :setlocal spell!<CR>
+set dictionary=/usr/share/dict/words
+
+" For autocompletion
+set completeopt=noinsert,menuone
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+inoremap <expr> <C-Space> <C-x><C-o>
+imap <C-@> <C-Space>
 
 set ignorecase
 set hlsearch
