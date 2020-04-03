@@ -6,7 +6,7 @@ execute pathogen#infect()
 " to make lightline.vim show and for colors
 set laststatus=2
 if !has('gui_running')
-	set t_Co=256
+  set t_Co=256
 endif
 
 colorscheme elflord
@@ -15,21 +15,21 @@ colorscheme elflord
 set noshowmode
 
 let g:promptline_preset = {
-	\'a' : [ promptline#slices#host() ],
-	\'b' : [ promptline#slices#user() ],
-	\'c' : [ promptline#slices#cwd() ],
-	\'y' : [ promptline#slices#vcs_branch() ],
-	\'warn' : [ promptline#slices#last_exit_code() ]}
+  \'a' : [ promptline#slices#host() ],
+  \'b' : [ promptline#slices#user() ],
+  \'c' : [ promptline#slices#cwd() ],
+  \'y' : [ promptline#slices#vcs_branch() ],
+  \'warn' : [ promptline#slices#last_exit_code() ]}
 
 " Configure lightline
 let g:lightline = {
-	\ 'colorscheme': 'wombat',
-	\ 'component': {
-	\   'readonly': '%{&readonly?"":""}',
-	\ },
-	\ 'separator': { 'left': '', 'right': '' },
-	\ 'subseparator': { 'left': '', 'right': '' },
-	\ }
+  \ 'colorscheme': 'wombat',
+  \ 'component': {
+  \   'readonly': '%{&readonly?"":""}',
+  \ },
+  \ 'separator': { 'left': '', 'right': '' },
+  \ 'subseparator': { 'left': '', 'right': '' },
+  \ }
 
 " Vim can recognize files and can load plugins
 filetype on
@@ -52,6 +52,43 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
   \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 inoremap <C-Space> <C-x><C-o>
 imap <C-@> <C-Space>
+
+" Look for tags in parent directories
+set tags=tags;/
+
+if has('cscope')
+  set cscopeverbose
+
+  if has('quickfix')
+    set cscopequickfix=s-,c-,d-,i-,t-,e-
+  endif
+
+  cnoreabbrev csa cs add
+  cnoreabbrev csf cs find
+  cnoreabbrev csk cs kill
+  cnoreabbrev csr cs reset
+  cnoreabbrev css cs show
+  cnoreabbrev csh cs help
+
+  " Shortcuts for finding callers of a function and all instance of a symbol
+  map g<C-]> :cs find 3 <C-R>=expand("<cword>")<CR><CR>
+  map g<C-\> :cs find 0 <C-R>=expand("<cword>")<CR><CR>
+
+  " Autoload cscope file
+  function! LoadCscope()
+    let db = findfile("cscope.out", ".;/")
+    if (!empty(db))
+      let path = strpart(db, 0, match(db, "/cscope.out$"))
+      set nocscopeverbose " suppress 'duplicate connection' error
+      exe "cs add " . db . " " . path
+      set cscopeverbose
+    " else add the database pointed to by environment variable
+    elseif $CSCOPE_DB != ""
+      cs add $CSCOPE_DB
+    endif
+  endfunction
+  au BufEnter /* call LoadCscope()
+endif
 
 " File browsing (:edit directory), |netrw-browse-maps| for mappings
 " Note: CTRL-^ will edit the alternate file (if you just opened a file from the
