@@ -50,13 +50,14 @@ inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
   \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-inoremap <C-Space> <C-x><C-o>
+inoremap <expr> <C-Space> pumvisible() ? "\<C-n>" : "\<C-x>\<C-o>"
 imap <C-@> <C-Space>
 
 " Look for tags in parent directories
 set tags=tags;/
 
 if has('cscope')
+  set cscopetag
   set cscopeverbose
 
   if has('quickfix')
@@ -71,8 +72,8 @@ if has('cscope')
   cnoreabbrev csh cs help
 
   " Shortcuts for finding callers of a function and all instance of a symbol
-  map g<C-]> :cs find 3 <C-R>=expand("<cword>")<CR><CR>
-  map g<C-\> :cs find 0 <C-R>=expand("<cword>")<CR><CR>
+  map g<C-]> :cs find c <C-R>=expand("<cword>")<CR><CR>
+  map g<C-\> :cs find a <C-R>=expand("<cword>")<CR><CR>
 
   " Autoload cscope file
   function! LoadCscope()
