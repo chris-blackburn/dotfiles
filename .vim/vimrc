@@ -14,8 +14,9 @@ colorscheme elflord
 " Mode displayed by lightline
 set noshowmode
 
+let g:promptline_theme = "lightline"
 let g:promptline_preset = {
-  \'a' : [ promptline#slices#host() ],
+  \'a' : [ '$([[ ! -z "${SSH_TTY}" ]] && (echo "ssh"))', promptline#slices#host() ],
   \'b' : [ promptline#slices#user() ],
   \'c' : [ promptline#slices#cwd() ],
   \'y' : [ promptline#slices#vcs_branch() ],
