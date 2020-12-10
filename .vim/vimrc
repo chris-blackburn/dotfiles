@@ -43,7 +43,8 @@ nnoremap <F7> :setlocal spell!<CR>
 set dictionary=/usr/share/dict/words
 
 " For autocompletion
-set completeopt=noinsert,menuone
+set omnifunc=syntaxcomplete#Complete
+set completeopt+=noinsert,menuone
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -117,7 +118,7 @@ hi CursorLine term=bold cterm=bold ctermbg=236
 
 " Mark column limit and force new line when typing past
 set tw=80
-set cc=80
+set cc=81
 hi ColorColumn ctermbg=240
 set nojoinspaces
 
