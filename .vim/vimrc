@@ -44,7 +44,7 @@ set dictionary=/usr/share/dict/words
 
 " For autocompletion
 set omnifunc=syntaxcomplete#Complete
-set completeopt+=noinsert,menuone
+set completeopt=noinsert,menuone
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -56,7 +56,12 @@ inoremap <expr> <C-Space> pumvisible() ? "\<C-n>" : "\<C-x>\<C-o>"
 imap <C-@> <C-Space>
 
 " Look for tags in parent directories
-set tags=tags;/
+set tags=./tags;/
+
+" Open matches in new tabs (if multiple matches are found, this remap fails, and
+" I'm not sure how to fix that yet)
+nnoremap <silent><Leader><C-]> <C-w><C-]><C-w>T
+set switchbuf=useopen,usetab
 
 if has('cscope')
   set cscopetag
@@ -73,13 +78,19 @@ if has('cscope')
   cnoreabbrev css cs show
   cnoreabbrev csh cs help
 
-  " Shortcuts for finding callers of a function and all instance of a symbol
-  map g<C-]> :cs find c <C-R>=expand("<cword>")<CR><CR>
-  map g<C-\> :cs find a <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-_>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-_>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-_>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+  nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+  nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+  nmap <C-_>a :cs find a <C-R>=expand("<cword>")<CR><CR>
 
   " Autoload cscope file
   function! LoadCscope()
-    let db = findfile("cscope.out", ".;/")
+    let db = findfile("cscope.out", ".;")
     if (!empty(db))
       let path = strpart(db, 0, match(db, "/cscope.out$"))
       set nocscopeverbose " suppress 'duplicate connection' error
@@ -132,11 +143,14 @@ nnoremap D "_D
 vnoremap d "_d
 vnoremap D "_D
 
+nnoremap c "_c
 nnoremap C "_C
+vnoremap c "_c
 vnoremap C "_C
 
 " Template files
-autocmd BufNewFile *.c 0r ~/.vim/templates/template.c
+autocmd BufNewFile *.c,*.cpp 0r ~/.vim/templates/template.c
+autocmd BufNewFile *.h,*.hpp 0r ~/.vim/templates/template.h
 autocmd BufNewFile *.py 0r ~/.vim/templates/template.py
 autocmd BufNewFile *.sh 0r ~/.vim/templates/template.sh
 
