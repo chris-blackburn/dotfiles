@@ -14,23 +14,23 @@ colorscheme elflord
 " Mode displayed by lightline
 set noshowmode
 
-let g:promptline_theme = "lightline"
-let g:promptline_preset = {
-  \'a' : [ promptline#slices#host() ],
-  \'b' : [ promptline#slices#user() ],
-  \'c' : [ promptline#slices#cwd() ],
-  \'y' : [ promptline#slices#vcs_branch() ],
-  \'warn' : [ promptline#slices#last_exit_code() ]}
-
 " Configure lightline
 let g:lightline = {
-  \ 'colorscheme': 'wombat',
+  \ 'colorscheme': 'seoul256',
   \ 'component': {
   \   'readonly': '%{&readonly?"":""}',
   \ },
   \ 'separator': { 'left': '', 'right': '' },
   \ 'subseparator': { 'left': '', 'right': '' },
   \ }
+
+let g:promptline_theme = "lightline"
+let g:promptline_preset = {
+  \'a' : [ promptline#slices#host() ],
+  \'b' : [ promptline#slices#user() ],
+  \'c' : [ promptline#slices#cwd({ 'dir_limit': 1 }) ],
+  \'y' : [ promptline#slices#vcs_branch() ],
+  \'warn' : [ promptline#slices#last_exit_code() ]}
 
 " Vim can recognize files and can load plugins
 filetype on
@@ -119,7 +119,7 @@ set showcmd
 set wildmenu
 set nowrap
 filetype indent on
-set autoindent noexpandtab tabstop=4 shiftwidth=4
+set autoindent expandtab tabstop=4 shiftwidth=4
 set nolazyredraw
 set ttyfast
 
@@ -153,6 +153,8 @@ autocmd BufNewFile *.c,*.cpp 0r ~/.vim/templates/template.c
 autocmd BufNewFile *.h,*.hpp 0r ~/.vim/templates/template.h
 autocmd BufNewFile *.py 0r ~/.vim/templates/template.py
 autocmd BufNewFile *.sh 0r ~/.vim/templates/template.sh
+" Base makefile for generating cscope and ctags for my goto dir structure
+autocmd BufNewFile Makefile 0r ~/.vim/templates/Makefile
 
 " Invisible characters
 " use "set list" to turn on and "set nolist" to turn off

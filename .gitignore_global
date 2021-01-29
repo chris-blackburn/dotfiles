@@ -2,5 +2,5 @@
 # repo's own gitignore (i.e. object files, etc.). That will just mess with other
 # people.
 tags
-cscope.out
+cscope*
 *.swp
