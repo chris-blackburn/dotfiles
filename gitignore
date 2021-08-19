@@ -1,6 +1,6 @@
 # ignore tagging and swp files. Don't ignore anything that should be inside a
 # repo's own gitignore (i.e. object files, etc.). That will just mess with other
 # people.
-tags
+tags*
 cscope*
 *.swp

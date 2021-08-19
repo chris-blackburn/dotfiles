@@ -55,12 +55,10 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 inoremap <expr> <C-Space> pumvisible() ? "\<C-n>" : "\<C-x>\<C-o>"
 imap <C-@> <C-Space>
 
-" Look for tags in parent directories
-set tags=./tags;/
-
 if has('cscope')
   set cscopetag
   set cscopeverbose
+  set cscoperelative
 
   if has('quickfix')
     set cscopequickfix=s-,c-,d-,i-,t-,e-
@@ -82,22 +80,15 @@ if has('cscope')
   nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
   nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
   nmap <C-_>a :cs find a <C-R>=expand("<cword>")<CR><CR>
-
-  " Autoload cscope file
-  function! LoadCscope()
-    let db = findfile("cscope.out", ".;")
-    if (!empty(db))
-      let path = strpart(db, 0, match(db, "/cscope.out$"))
-      set nocscopeverbose " suppress 'duplicate connection' error
-      exe "cs add " . db . " " . path
-      set cscopeverbose
-    " else add the database pointed to by environment variable
-    elseif $CSCOPE_DB != ""
-      cs add $CSCOPE_DB
-    endif
-  endfunction
-  au BufEnter /* call LoadCscope()
 endif
+
+let g:gutentags_modules = ["ctags", "cscope"]
+let g:gutentags_generate_on_new = 1
+let g:gutentags_generate_on_missing = 1
+let g:gutentags_generate_on_write = 1
+let g:gutentags_generate_on_empty_buffer = 0
+let g:gutentags_auto_add_cscope = 1
+let g:gutentags_cscope_build_inverted_index = 1
 
 set ignorecase
 set hlsearch
