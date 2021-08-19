@@ -58,11 +58,6 @@ imap <C-@> <C-Space>
 " Look for tags in parent directories
 set tags=./tags;/
 
-" Open matches in new tabs (if multiple matches are found, this remap fails, and
-" I'm not sure how to fix that yet)
-nnoremap <silent><Leader><C-]> <C-w><C-]><C-w>T
-set switchbuf=useopen,usetab
-
 if has('cscope')
   set cscopetag
   set cscopeverbose
@@ -104,14 +99,6 @@ if has('cscope')
   au BufEnter /* call LoadCscope()
 endif
 
-" File browsing (:edit directory), |netrw-browse-maps| for mappings
-" Note: CTRL-^ will edit the alternate file (if you just opened a file from the
-" netrw browser, it will re-open the browser).
-let g:netrw_banner=0
-let g:netrw_banner=4 "open to the left
-let g:netrw_altv=1 "open splits to the right by default
-let g:netrw_liststyle=3 " tree view
-
 set ignorecase
 set hlsearch
 set incsearch
@@ -132,10 +119,6 @@ set tw=80
 set cc=81
 hi ColorColumn ctermbg=240
 set nojoinspaces
-
-" If we were using X11, this would use its clipboard. Vim needs to be compiled
-" with X11 and xterm_clipboard for this to work. see :version
-set clipboard=unnamedplus
 
 " send deleted and changed text to black hole register
 nnoremap d "_d

@@ -1,0 +1,5 @@
+alias ls="ls --color=auto"
+alias ll="ls -l"
+alias vi="vim"
+alias tmux="tmux -2"
+alias se="sudoedit"

@@ -1,24 +1,9 @@
-[submodule ".vim/bundle/promptline.vim"]
-	path = .vim/bundle/promptline.vim
-	url = https://github.com/edkolev/promptline.vim.git
-[submodule ".vim/bundle/tmuxline.vim"]
-	path = .vim/bundle/tmuxline.vim
-	url = https://github.com/edkolev/tmuxline.vim.git
-[submodule ".vim/bundle/lightline.vim"]
-	path = .vim/bundle/lightline.vim
+[submodule "vim/bundle/lightline.vim"]
+	path = vim/bundle/lightline.vim
 	url = https://github.com/itchyny/lightline.vim.git
-[submodule ".tmux/plugins/tpm"]
-	path = .tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm.git
-[submodule ".tmux/plugins/tmux-resurrect"]
-	path = .tmux/plugins/tmux-resurrect
-	url = https://github.com/tmux-plugins/tmux-resurrect.git
-[submodule ".tmux/plugins/tmux-sensible"]
-	path = .tmux/plugins/tmux-sensible
-	url = https://github.com/tmux-plugins/tmux-sensible.git
-[submodule ".vim/bundle/vim-obsession"]
-	path = .vim/bundle/vim-obsession
-	url = https://github.com/tpope/vim-obsession.git
-[submodule ".tmux/plugins/tmux-yank"]
-	path = .tmux/plugins/tmux-yank
-	url = https://github.com/tmux-plugins/tmux-yank.git
+[submodule "vim/bundle/promptline.vim"]
+	path = vim/bundle/promptline.vim
+	url = https://github.com/edkolev/promptline.vim.git
+[submodule "vim/bundle/tmuxline.vim"]
+	path = vim/bundle/tmuxline.vim
+	url = https://github.com/edkolev/tmuxline.vim.git
