@@ -4,18 +4,27 @@ test -f "$PWD/install.sh" || (echo "Please run this script within the dotfiles d
 
 git submodule update --init || (echo "Failed to initialize submodules"; exit 1)
 
-ln -sf "$PWD/zshrc" ~/.zshrc
-ln -sf "$PWD/zshenv" ~/.zshenv
-ln -sf "$PWD/aliases" ~/.aliases
-ln -sf "$PWD/vim" ~/.vim
-ln -sf "$PWD/ctags" ~/.ctags
-ln -sf "$PWD/tmux.conf" ~/.tmux.conf
-ln -sf "$PWD/gitignore" ~/.gitignore
+files=(
+    "zshrc"
+    "zshenv"
+    "aliases"
+    "gitignore"
+    "tmux.conf"
+    "vim"
+    "ctags.d"
+    "fzf"
+)
 
-# Create promptline and tmuxline files for nice styling (based on vimrc theme)
-source "$PWD/makeprompt.sh"
+for file in $files; do
+    ln -sf "$PWD/$file" "~/.$file"
+done
 
 git config --global core.excludesfile ~/.gitignore
 
 # Some fancy GDB nonsense
 #wget -qNP ~ https://git.io/.gdbinit
+
+# Create promptline and tmuxline files for nice styling (based on vimrc theme)
+source $PWD/makeprompt.sh
+
+source $PWD/fzf/install --completion --key-bindings --no-bash --no-fish --no-update-rc

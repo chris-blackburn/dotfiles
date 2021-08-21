@@ -10,3 +10,6 @@
 [submodule "vim/bundle/vim-gutentags"]
 	path = vim/bundle/vim-gutentags
 	url = https://github.com/ludovicchabant/vim-gutentags.git
+[submodule "fzf"]
+	path = fzf
+	url = https://github.com/junegunn/fzf.git

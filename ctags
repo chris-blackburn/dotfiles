@@ -1,7 +1,0 @@
---recurse=yes
---exclude=.git
---exclude=build
---exclude=dist
---exclude=bin
---exclude=docs
---tag-relative=yes

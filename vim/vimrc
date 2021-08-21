@@ -3,6 +3,8 @@ set shell=/bin/bash
 
 execute pathogen#infect()
 
+set rtp+=~/.fzf
+
 " to make lightline.vim show and for colors
 set laststatus=2
 if !has('gui_running')
@@ -82,13 +84,16 @@ if has('cscope')
   nmap <C-_>a :cs find a <C-R>=expand("<cword>")<CR><CR>
 endif
 
-let g:gutentags_modules = ["ctags", "cscope"]
-let g:gutentags_generate_on_new = 1
+let g:gutentags_modules = ["ctags"]
+let g:gutentags_define_advanced_commands = 1
+let g:gutentags_generate_on_new = 0
 let g:gutentags_generate_on_missing = 1
 let g:gutentags_generate_on_write = 1
 let g:gutentags_generate_on_empty_buffer = 0
-let g:gutentags_auto_add_cscope = 1
-let g:gutentags_cscope_build_inverted_index = 1
+"let g:gutentags_auto_add_cscope = 1
+"let g:gutentags_cscope_build_inverted_index = 1
+
+nnoremap <C-p> :FZF<CR>
 
 set ignorecase
 set hlsearch
@@ -121,6 +126,9 @@ nnoremap c "_c
 nnoremap C "_C
 vnoremap c "_c
 vnoremap C "_C
+
+" Don't put what I just pasted over into the copy buffer
+xnoremap p "_dP
 
 " Template files
 autocmd BufNewFile *.c,*.cpp 0r ~/.vim/templates/template.c
