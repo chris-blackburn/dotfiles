@@ -1,0 +1,13 @@
+--exclude=.git
+--exclude=build
+--exclude=output
+--exclude=dist
+--exclude=bin
+--exclude=doc
+--exclude=docs
+--exclude=man
+--exclude=*.md
+--exclude=*.txt
+--exclude=*.log
+--exclude=*.cmake
+--exclude=Makefile*

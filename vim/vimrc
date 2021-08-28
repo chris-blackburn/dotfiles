@@ -16,30 +16,47 @@ colorscheme elflord
 " Mode displayed by lightline
 set noshowmode
 
-" Configure lightline
-let g:lightline = {
-  \ 'colorscheme': 'seoul256',
-  \ 'component': {
-  \   'readonly': '%{&readonly?"":""}',
-  \ },
-  \ 'separator': { 'left': '', 'right': '' },
-  \ 'subseparator': { 'left': '', 'right': '' },
-  \ }
-
-let g:promptline_theme = "lightline"
-let g:promptline_preset = {
-  \'a' : [ promptline#slices#host() ],
-  \'b' : [ promptline#slices#user() ],
-  \'c' : [ promptline#slices#cwd({ 'dir_limit': 1 }) ],
-  \'y' : [ promptline#slices#vcs_branch() ],
-  \'warn' : [ promptline#slices#last_exit_code() ]}
+set noerrorbells
+set ignorecase
+set hlsearch
+set incsearch
+set showcmd
+set wildmenu
+set nowrap
+set autoindent smartindent expandtab tabstop=4 softtabstop=4 shiftwidth=4
+set nolazyredraw
+set ttyfast
+set splitright
 
 " Vim can recognize files and can load plugins
 filetype on
+filetype indent on
 filetype plugin on
 
 " pretty much always want Syntax highlighting
 syntax on
+
+" Space for leader instead of default '\'
+nnoremap <Space> <Nop>
+let mapleader = " "
+
+" Highlight the current line
+set cursorline
+hi CursorLine term=bold cterm=bold ctermbg=236
+
+" Mark column limit and force new line when typing past
+set tw=80
+set cc=81
+hi ColorColumn ctermbg=240
+set nojoinspaces
+
+" Set the swap and backup dir to something not annoying
+set directory=~/.vim/.swp,/tmp
+set backupdir=~/.vim/.backup,/tmp
+
+" I don't want mouse
+set mouse=
+set ttymouse=
 
 nnoremap <F7> :setlocal spell!<CR>
 set dictionary=/usr/share/dict/words
@@ -57,64 +74,107 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 inoremap <expr> <C-Space> pumvisible() ? "\<C-n>" : "\<C-x>\<C-o>"
 imap <C-@> <C-Space>
 
+" Took this from racer-rust/vim-racer to wrap some cscope commands that don't
+" add to the tag stack
+if &tagstack && exists('*gettagstack') && exists('*settagstack')
+    function! TagPre()
+        let from = [bufnr('%'), line('.'), col('.'), 0]
+        let tagname = expand('<cword>')
+        let stack = gettagstack()
+        if stack.curidx > 1
+            let stack.items = stack.items[0:stack.curidx-2]
+        else
+            let stack.items = []
+        endif
+        let stack.items += [{'from': from, 'tagname': tagname}]
+        let stack.curidx = len(stack.items)
+        call settagstack(win_getid(), stack)
+    endfunction
+
+    function! TagPost()
+        let curidx = gettagstack().curidx + 1
+        call settagstack(win_getid(), {'curidx': curidx})
+    endfunction
+else
+    function! TagPre()
+    endfunction
+    function! TagPost()
+    endfunction
+endif
+
 if has('cscope')
-  set cscopetag
-  set cscopeverbose
-  set cscoperelative
+    set cscopetag
+    " This will be active until I can get gutentags to handle cscope properly
+    set csto=1
+    set cscopeverbose
+    set cscoperelative
 
-  if has('quickfix')
+    if has('quickfix')
     set cscopequickfix=s-,c-,d-,i-,t-,e-
-  endif
+    endif
 
-  cnoreabbrev csa cs add
-  cnoreabbrev csf cs find
-  cnoreabbrev csk cs kill
-  cnoreabbrev csr cs reset
-  cnoreabbrev css cs show
-  cnoreabbrev csh cs help
+    cnoreabbrev csa cs add
+    cnoreabbrev csf cs find
+    cnoreabbrev csk cs kill
+    cnoreabbrev csr cs reset
+    cnoreabbrev css cs show
+    cnoreabbrev csh cs help
 
-  nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-_>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-_>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-_>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-_>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-_>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-  nmap <C-_>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-  nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-  nmap <C-_>a :cs find a <C-R>=expand("<cword>")<CR><CR>
+    function! WithTag(option)
+      let l:query=expand("<cword>")
+      call TagPre()
+      execute "cs find " . a:option . " " l:query
+      call TagPost()
+    endfunction
+
+    nnoremap <silent> <leader>s :call WithTag("s")<CR>
+    nnoremap <silent> <leader>c :call WithTag("c")<CR>
+    nnoremap <silent> <leader>a :cs find a <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <silent> <leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <silent> <leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+
+    " Autoload cscope file
+    function! LoadCscope()
+        let db = findfile("cscope.out", ".;")
+        if (!empty(db))
+            let path = strpart(db, 0, match(db, "/cscope.out$"))
+            set nocscopeverbose " suppress 'duplicate connection' error
+            exe "cs add " . db . " " . path
+            set cscopeverbose
+            " else add the database pointed to by environment variable
+        elseif $CSCOPE_DB != ""
+            cs add $CSCOPE_DB
+        endif
+    endfunction
+    au BufEnter /* call LoadCscope()
 endif
 
 let g:gutentags_modules = ["ctags"]
 let g:gutentags_define_advanced_commands = 1
+let g:gutentags_trace = 0
 let g:gutentags_generate_on_new = 0
 let g:gutentags_generate_on_missing = 1
 let g:gutentags_generate_on_write = 1
 let g:gutentags_generate_on_empty_buffer = 0
-"let g:gutentags_auto_add_cscope = 1
-"let g:gutentags_cscope_build_inverted_index = 1
+let g:gutentags_auto_add_cscope = 0
+let g:gutentags_cscope_build_inverted_index = 0
 
-nnoremap <C-p> :FZF<CR>
+function! CtrlP()
+    let root = system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
+    if !empty(root)
+        let s:opts = {
+            \ 'source': 'git ls-files -oc --exclude-standard | uniq',
+            \ 'dir': root,
+            \ 'options': '-m --prompt "'.gitbranch#name().'> "'
+            \}
+        call fzf#run(fzf#wrap(s:opts))
+    else
+        execute "FZF"
+    endif
+endfunction
 
-set ignorecase
-set hlsearch
-set incsearch
-set showcmd
-set wildmenu
-set nowrap
-filetype indent on
-set autoindent expandtab tabstop=4 shiftwidth=4
-set nolazyredraw
-set ttyfast
-
-" Highlight the current line
-set cursorline
-hi CursorLine term=bold cterm=bold ctermbg=236
-
-" Mark column limit and force new line when typing past
-set tw=80
-set cc=81
-hi ColorColumn ctermbg=240
-set nojoinspaces
+let g:fzf_layout = { 'down': '25%' }
+nnoremap <silent> <C-p> :call CtrlP()<CR>
 
 " send deleted and changed text to black hole register
 nnoremap d "_d
@@ -130,6 +190,49 @@ vnoremap C "_C
 " Don't put what I just pasted over into the copy buffer
 xnoremap p "_dP
 
+nnoremap - <Nop>
+nnoremap + <Nop>
+
+" Buffer navigation
+nnoremap <silent> <leader>h :wincmd h<CR>
+nnoremap <silent> <leader>j :wincmd j<CR>
+nnoremap <silent> <leader>k :wincmd k<CR>
+nnoremap <silent> <leader>l :wincmd l<CR>
+
+nnoremap <silent> <leader>H :wincmd H<CR>
+nnoremap <silent> <leader>J :wincmd J<CR>
+nnoremap <silent> <leader>K :wincmd K<CR>
+nnoremap <silent> <leader>L :wincmd L<CR>
+
+nnoremap <silent> <leader>v :vnew<CR>
+nnoremap <silent> <leader>q :wincmd q<CR>
+
+nnoremap <silent> <leader>} <C-W>r
+nnoremap <silent> <leader>{ <C-W>R
+
+nnoremap <silent> <leader>> 10<C-W>>
+nnoremap <silent> <leader>< 10<C-W><
+
+nnoremap <silent> <leader>= :wincmd =<CR>
+
+" Basically nerdtree
+let g:netrw_banner=0
+let g:netrw_liststyle=3
+let g:netrw_winsize=15
+
+function! Browse()
+    let l:netrw_browse_split=4
+    let l:netrw_altv=1
+    let l:netrw_preview=1
+    exec "Lex"
+endfunction
+nnoremap <silent> <leader>pv :call Browse()<CR>
+
+nnoremap <silent> <leader>6 <C-^>
+
+" Haven't figured this one out yet...
+"nnoremap <leader>b :!git blame % -L<C-r>=line('.')<CR>,<C-r>=line('.')<CR><CR>
+
 " Template files
 autocmd BufNewFile *.c,*.cpp 0r ~/.vim/templates/template.c
 autocmd BufNewFile *.h,*.hpp 0r ~/.vim/templates/template.h
@@ -142,10 +245,54 @@ autocmd BufNewFile Makefile 0r ~/.vim/templates/Makefile
 " use "set list" to turn on and "set nolist" to turn off
 set listchars=eol:¬,tab:»\ ,space:·
 
-" Set the swap and backup dir to something not annoying
-set directory=~/.vim/.swp,/tmp
-set backupdir=~/.vim/.backup,/tmp
+" Configure lightline
+let g:lightline = {
+  \ 'colorscheme': 'seoul256',
+  \ 'component_function': {
+  \   'gitbranch': 'LightlineGitbranch'
+  \ },
+  \ 'component': {
+  \   'readonly': '%{&readonly?"":""}'
+  \ },
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ],
+  \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+  \ },
+  \ 'separator': { 'left': '', 'right': '' },
+  \ 'subseparator': { 'left': '', 'right': '' },
+  \ }
 
-" I don't want mouse
-set mouse=
-set ttymouse=
+function! LightlineGitbranch()
+    let branch = gitbranch#name()
+    if len(branch) != 0
+        return ' ' . branch
+    endif
+    return ''
+endfunction
+
+let g:promptline_theme = "lightline"
+let g:promptline_preset = {
+  \'a' : [ promptline#slices#host() ],
+  \'b' : [ promptline#slices#user() ],
+  \'c' : [ promptline#slices#cwd({ 'dir_limit': 1 }) ],
+  \'y' : [ promptline#slices#vcs_branch() ],
+  \'warn' : [ promptline#slices#last_exit_code() ]}
+
+let g:fzf_colors =
+  \ { 'fg':      ['fg', 'Normal'],
+  \   'bg':      ['bg', 'Normal'],
+  \   'hl':      ['fg', 'Comment'],
+  \   'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \   'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \   'hl+':     ['fg', 'Statement'],
+  \   'info':    ['fg', 'PreProc'],
+  \   'border':  ['fg', 'Ignore'],
+  \   'prompt':  ['fg', 'Conditional'],
+  \   'pointer': ['fg', 'Exception'],
+  \   'marker':  ['fg', 'Keyword'],
+  \   'spinner': ['fg', 'Label'],
+  \   'header':  ['fg', 'Comment'] }
+
+" For project-specific vimrc
+set exrc
+set secure
