@@ -29,9 +29,10 @@ let g:lightline = {
   \ 'subseparator': { 'left': '', 'right': '' },
   \ }
 
+" Branch name in the status line
 function! LightlineGitbranch()
-    let branch = gitbranch#name()
-    if len(branch) != 0
+    let l:branch = gitbranch#name()
+    if len(branch) != 0 && winwidth(0) > 70
         return ' ' . branch
     endif
     return ''
