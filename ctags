@@ -1,13 +1,13 @@
+--recurse=yes
+--tag-relative=yes
 --exclude=.git
 --exclude=build
 --exclude=output
 --exclude=dist
 --exclude=bin
---exclude=doc
---exclude=docs
+--exclude=doc*
 --exclude=man
 --exclude=*.md
---exclude=*.txt
 --exclude=*.log
 --exclude=*.cmake
 --exclude=Makefile*

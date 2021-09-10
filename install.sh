@@ -11,7 +11,7 @@ files=(
     "gitignore"
     "tmux.conf"
     "vim"
-    "ctags.d"
+    "ctags"
     "fzf"
     "dircolors"
 )
@@ -23,6 +23,8 @@ for file in "${files[@]}"; do
 done
 
 git config --global core.excludesfile ~/.gitignore
+git config --global merge.tool vimdiff
+git config --global alias.ch checkout
 
 # Some fancy GDB nonsense
 #wget -qNP ~ https://git.io/.gdbinit
@@ -36,6 +38,4 @@ curl -Lso $PWD/installme.ttf https://github.com/powerline/fonts/raw/master/DejaV
 # Put this at the end because it changes dir
 source $PWD/fzf/install --completion --key-bindings --no-bash --no-fish --no-update-rc
 
-echo "Install universal-ctags manually or just grab normal ctags"
-
-echo "Make sure to switch shell to zsh"
+(which zsh && chsh -s $(which zsh)) || (echo "Couldn't change shell to zsh (is it installed?"; exit 1)
