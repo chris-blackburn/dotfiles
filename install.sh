@@ -39,4 +39,4 @@ curl -Lso $PWD/installme.ttf https://github.com/powerline/fonts/raw/master/DejaV
 source $PWD/fzf/install --completion --key-bindings --no-bash --no-fish --no-update-rc
 
 echo "Changing shell to zsh"
-(which zsh && chsh -s $(which zsh)) || (echo "Couldn't change shell to zsh (is it installed?)")
+(which zsh >/dev/null && chsh -s $(which zsh)) || (echo "Couldn't change shell to zsh (is it installed?)")
