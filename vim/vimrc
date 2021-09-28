@@ -61,7 +61,7 @@ let g:fzf_colors =
   \   'spinner': ['fg', 'Label'],
   \   'header':  ['fg', 'Comment'] }
 
-set noerrorbells
+set noerrorbells visualbell
 set ignorecase
 set hlsearch
 set incsearch
