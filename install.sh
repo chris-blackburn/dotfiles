@@ -13,7 +13,6 @@ files=(
     "vim"
     "ctags"
     "fzf"
-    "dircolors"
 )
 
 for file in "${files[@]}"; do

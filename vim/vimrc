@@ -32,7 +32,7 @@ let g:lightline = {
 " Branch name in the status line
 function! LightlineGitbranch()
     let l:branch = gitbranch#name()
-    if len(branch) != 0 && winwidth(0) > 70
+    if len(branch) != 0 && winwidth(0) > 80
         return ' ' . branch
     endif
     return ''
