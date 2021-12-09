@@ -11,6 +11,7 @@ endif
 colorscheme elflord
 
 set noshowmode
+set sessionoptions-=options
 
 " Configure lightline
 let g:lightline = {
@@ -43,6 +44,7 @@ let g:promptline_preset = {
   \'a' : [ promptline#slices#host() ],
   \'b' : [ promptline#slices#user() ],
   \'c' : [ promptline#slices#cwd({ 'dir_limit': 1 }) ],
+  \'x' : [ promptline#slices#python_virtualenv() ],
   \'y' : [ promptline#slices#vcs_branch() ],
   \'warn' : [ promptline#slices#last_exit_code() ]}
 
@@ -113,6 +115,8 @@ inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
   \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
@@ -150,8 +154,7 @@ endif
 
 if has('cscope')
     set cscopetag
-    " Search through ctags first (gutentags updates ctags, idk how to make it
-    " work nicely with cscope yet)
+    " Search through ctags first
     set csto=1
     set cscopeverbose
     set cscoperelative
@@ -196,6 +199,7 @@ if has('cscope')
     au BufEnter /* call LoadCscope()
 endif
 
+" TODO: update my fork of gutentags to better support cscope
 let g:gutentags_modules = ["ctags"]
 let g:gutentags_define_advanced_commands = 1
 let g:gutentags_trace = 0
@@ -220,7 +224,7 @@ function! CtrlP()
     endif
 endfunction
 
-let g:fzf_layout = { 'down': '25%' }
+let g:fzf_layout = { 'down': '10' }
 nnoremap <silent> <C-p> :call CtrlP()<CR>
 
 " send deleted and changed text to black hole register

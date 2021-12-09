@@ -1,7 +1,17 @@
 # Set up the prompt
 
 if [ -f ~/.promptline.sh ]; then
+    # promptline creates a function that sets the PROMPT variable as a precmd
+    # hook. In order to add this newline outside of promptline.vim script, we
+    # have to add another hook which takes the generated PROMPT variable, and
+    # appends the additional characters.
+    function __with_newline {
+        PROMPT="$PROMPT"$'\n'"%% "
+    }
+
     source ~/.promptline.sh
+
+    precmd_functions+=(__with_newline)
 else
     autoload -Uz promptinit
     promptinit
