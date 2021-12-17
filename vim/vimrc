@@ -11,6 +11,8 @@ endif
 colorscheme elflord
 
 set noshowmode
+set encoding=utf-8
+
 set sessionoptions-=options
 
 " Configure lightline
