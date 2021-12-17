@@ -95,7 +95,7 @@ hi CursorLine term=bold cterm=bold ctermbg=236
 
 " Mark column limit and force new line when typing past
 set tw=80
-set cc=81
+set cc=+1
 hi ColorColumn ctermbg=240
 set nojoinspaces
 
@@ -295,6 +295,7 @@ autocmd BufNewFile *.c,*.cpp 0r ~/.vim/templates/template.c
 autocmd BufNewFile *.h,*.hpp 0r ~/.vim/templates/template.h
 autocmd BufNewFile *.py 0r ~/.vim/templates/template.py
 autocmd BufNewFile *.sh 0r ~/.vim/templates/template.sh
+autocmd BufNewFile *.rs 0r ~/.vim/templates/template.rs
 autocmd BufNewFile Makefile 0r ~/.vim/templates/Makefile
 
 " Invisible characters
