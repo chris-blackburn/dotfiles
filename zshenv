@@ -2,4 +2,7 @@ export TERM="xterm-256color"
 export EDITOR=vim
 export VISUAL=$EDITOR
 export LESS="$LESS -R -Q"
-export ZLE_RPROMPT_INDENT=0
+
+# This is supposed to make the right prompt flush against
+# the terminal, but it breaks the prompt.
+#export ZLE_RPROMPT_INDENT=0
