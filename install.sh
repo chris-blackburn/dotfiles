@@ -1,6 +1,6 @@
 #!/bin/bash
 
-$_root=$(realpath $(dirname "$0"))
+_root=$(realpath $(dirname "$0"))
 
 git submodule update --init || (echo "Failed to initialize submodules"; exit 1)
 
