@@ -160,6 +160,7 @@ if has('cscope')
     set csto=1
     set cscopeverbose
     set cscoperelative
+    set cscprg=cscope\ -C
 
     if has('quickfix')
         set cscopequickfix=s-,c-,d-,i-,t-,e-
@@ -258,6 +259,7 @@ nnoremap <silent> <leader>K :wincmd K<CR>
 nnoremap <silent> <leader>L :wincmd L<CR>
 
 nnoremap <silent> <leader>v :vnew<CR>
+nnoremap <silent> <leader>- :new<CR>
 nnoremap <silent> <leader>q :wincmd q<CR>
 
 nnoremap <silent> <leader>} <C-W>r
@@ -267,6 +269,29 @@ nnoremap <silent> <leader>> 10<C-W>>
 nnoremap <silent> <leader>< 10<C-W><
 
 nnoremap <silent> <leader>= :wincmd =<CR>
+
+" Mimics tmux's zoom-pane functionality where we can toggle zoom on a single
+" pane without closing other panes. works per vim tab.
+function! ZoomPane()
+    if 1 == winnr('$')
+        return
+    endif
+
+    let restorecmd = winrestcmd()
+
+    wincmd |
+    wincmd _
+
+    " If the restore command didn't change after focusing on this pane, then we
+    " were already zoomed and have to restore the original alyout. Otherwise,
+    " store the zoom restore command for later
+    if restorecmd ==# winrestcmd()
+        exe t:restore
+        return
+    else
+        let t:restore = restorecmd
+    endif
+endfunction
 
 " Basically nerdtree
 let g:netrw_banner=0
