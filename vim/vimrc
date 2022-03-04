@@ -155,12 +155,8 @@ else
 endif
 
 if has('cscope')
-    set cscopetag
-    " Search through ctags first
-    set csto=1
     set cscopeverbose
     set cscoperelative
-    set cscprg=cscope\ -C
 
     if has('quickfix')
         set cscopequickfix=s-,c-,d-,i-,t-,e-
@@ -260,10 +256,11 @@ nnoremap <silent> <leader>L :wincmd L<CR>
 
 nnoremap <silent> <leader>v :vnew<CR>
 nnoremap <silent> <leader>- :new<CR>
+nnoremap <silent> <leader>t :tabnew<CR>
 nnoremap <silent> <leader>q :wincmd q<CR>
 
-nnoremap <silent> <leader>} <C-W>r
-nnoremap <silent> <leader>{ <C-W>R
+nnoremap <silent> <leader>r <C-W>r
+nnoremap <silent> <leader>R <C-W>R
 
 nnoremap <silent> <leader>> 10<C-W>>
 nnoremap <silent> <leader>< 10<C-W><
@@ -292,6 +289,7 @@ function! ZoomPane()
         let t:restore = restorecmd
     endif
 endfunction
+nnoremap <silent> <leader>o :call ZoomPane()<CR>
 
 " Basically nerdtree
 let g:netrw_banner=0
