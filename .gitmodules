@@ -13,6 +13,3 @@
 [submodule "fzf"]
 	path = fzf
 	url = https://github.com/junegunn/fzf.git
-[submodule "vim/bundle/vim-gitbranch"]
-	path = vim/bundle/vim-gitbranch
-	url = https://github.com/itchyny/vim-gitbranch.git
