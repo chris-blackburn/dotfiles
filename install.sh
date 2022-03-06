@@ -24,6 +24,7 @@ done
 git config --global core.excludesfile ~/.gitignore
 git config --global merge.tool vimdiff
 git config --global alias.co checkout
+git config --global alias.wt worktree
 
 # Some fancy GDB nonsense
 wget -qNP ~ https://git.io/.gdbinit

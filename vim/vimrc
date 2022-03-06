@@ -66,6 +66,7 @@ autocmd BufNewFile Makefile 0r ~/.vim/templates/Makefile
 " Invisible characters
 " use "set list" to turn on and "set nolist" to turn off
 set listchars=tab:»\ ,trail:-
+set list
 
 " For project-specific vimrc
 set exrc
@@ -180,6 +181,32 @@ nnoremap <silent> <leader>6 <C-^>
 
 nnoremap <leader>b :echo gitme#blame()<CR>
 
+" quickfix navigation
+nnoremap <C-j> :cn<CR>
+nnoremap <C-k> :cp<CR>
+
+" vimgrep git files given a pattern
+function! _GitGrep(pattern)
+    function! _filter(path)
+        if isdirectory(a:path) || !filereadable(a:path)
+            return 0
+        endif
+
+        return 1
+    endfunction
+
+    let l:files = filter(gitme#files(), "_filter('".gitme#root()."/'.v:val)")
+
+    try
+        exec "vimgrep /".a:pattern."/g ".join(l:files, " ")
+    catch /.*/
+        echo v:exception
+    endtry
+endfunction
+
+command! -nargs=1 GitGrep call _GitGrep(<q-args>)
+nnoremap <leader>vg :GitGrep 
+
 " For autocompletion
 set omnifunc=syntaxcomplete#Complete
 set completeopt=longest,menuone
@@ -274,7 +301,7 @@ function! CtrlP()
     let root = gitme#root()
     if !empty(root)
         let s:opts = {
-            \ 'source': 'git ls-files -oc --exclude-standard | uniq',
+            \ 'source': gitme#files(),
             \ 'dir': root,
             \ 'options': '-m --prompt "'.gitme#branch().'> "'
             \}
@@ -284,6 +311,33 @@ function! CtrlP()
     endif
 endfunction
 nnoremap <silent> <C-p> :call CtrlP()<CR>
+
+" Select and switch to another worktree
+function! WTDo(op) abort
+    let l:root = gitme#root()
+    if empty(root)
+        return
+    endif
+
+    if a:op == "switch"
+        let l:Op = function('gitme#wts')
+    elseif a:op == "delete"
+        let l:Op = function('gitme#wtd')
+    else
+        return
+    endif
+
+    let s:opts = {
+        \ 'source': gitme#wtl(),
+        \ 'dir': l:root,
+        \ 'options': '--prompt "'.a:op.' worktree> "',
+        \ 'sink': l:Op,
+        \ 'down': 10
+        \}
+    call fzf#run(s:opts)
+endfunction
+nnoremap <silent> <leader>ws :call WTDo("switch")<CR>
+nnoremap <silent> <leader>wd :call WTDo("delete")<CR>
 
 " Mimics tmux's zoom-pane functionality where we can toggle zoom on a single
 " pane without closing other panes. works per vim tab.
