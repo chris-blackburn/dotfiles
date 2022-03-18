@@ -2,19 +2,19 @@
 
 " Grab the project root directory
 function! gitme#root()
-    let l:cmd = 'git rev-parse --show-toplevel 2> /dev/null'
-    return trim(system(l:cmd))
+    let cmd = 'git rev-parse --show-toplevel 2> /dev/null'
+    return trim(system(cmd))
 endfunction
 
 function! gitme#branch()
-    let l:cmd = 'git rev-parse --abbrev-ref HEAD 2> /dev/null'
-    return trim(system(l:cmd))
+    let cmd = 'git rev-parse --abbrev-ref HEAD 2> /dev/null'
+    return trim(system(cmd))
 endfunction
 
 " Echo the blame of the current line
 function! gitme#smallblame()
-    let l:cmd = "git blame -w ".expand("%")." -L".expand(line('.')).",+1 2> /dev/null"
-    return trim(system(l:cmd))
+    let cmd = "git blame -w ".expand("%")." -L".expand(line('.')).",+1 2> /dev/null"
+    return trim(system(cmd))
 endfunction
 
 function! gitme#blame()
@@ -54,33 +54,33 @@ function! gitme#files()
         return []
     endif
 
-    let l:cmd = "git ls-files -oc --exclude-standard | uniq 2> /dev/null"
-    return systemlist(l:cmd)
+    let cmd = "git ls-files -oc --exclude-standard | uniq 2> /dev/null"
+    return systemlist(cmd)
 endfunction
 
 " worktree list (does not return the current wt)
 function! gitme#wtl()
-    let l:root = gitme#root()
-    let l:cmd = "git worktree list 2> /dev/null"
+    let root = gitme#root()
+    let cmd = "git worktree list 2> /dev/null"
 
-    let l:wtrees = systemlist(l:cmd)
-    return filter(l:wtrees, "len(v:val) >= 3")
+    let wtrees = systemlist(cmd)
+    return filter(wtrees, "len(v:val) >= 3")
 endfunction
 
 function! gitme#wtd(worktree)
-    let l:root = split(a:worktree)[0]
+    let root = split(a:worktree)[0]
 
-    let l:cmd = "git worktree remove ".l:root
-    call system(l:cmd)
+    let cmd = "git worktree remove ".root
+    call system(cmd)
 endfunction
 
 " Given an element from gitme#wtl, switches vim to that worktree
 function! gitme#wts(worktree) abort
 
-    let l:curdir = getcwd()
-    let l:root = split(a:worktree)[0]
+    let curdir = getcwd()
+    let root = split(a:worktree)[0]
 
-    if l:curdir ==? l:root
+    if curdir ==? root
         return
     endif
 
@@ -89,11 +89,11 @@ function! gitme#wts(worktree) abort
     exec "bufdo bd"
 
     " Switch dir to the new worktree
-    exec "chdir ".l:root
+    exec "chdir ".root
 
     " Restore session if one exists
-    if filereadable(l:root."/Session.vim")
-        exec "source ".l:root."/Session.vim"
+    if filereadable(root."/Session.vim")
+        exec "source ".root."/Session.vim"
     else
         exec "Ex"
     endif
