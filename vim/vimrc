@@ -179,7 +179,7 @@ nnoremap <silent> <leader>= :wincmd =<CR>
 
 nnoremap <silent> <leader>6 <C-^>
 
-nnoremap <leader>b :echo gitme#blame()<CR>
+nnoremap <silent> <leader>b :call gitme#blame()<CR>
 
 " quickfix navigation
 nnoremap <C-j> :cn<CR>
