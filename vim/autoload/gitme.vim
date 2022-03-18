@@ -12,9 +12,41 @@ function! gitme#branch()
 endfunction
 
 " Echo the blame of the current line
-function! gitme#blame()
+function! gitme#smallblame()
     let l:cmd = "git blame -w ".expand("%")." -L".expand(line('.')).",+1 2> /dev/null"
     return trim(system(l:cmd))
+endfunction
+
+function! gitme#blame()
+    let pos = winsaveview()
+
+    setlocal cursorbind
+    setlocal scrollbind
+
+    vnew
+    wincmd H
+
+    setlocal cursorbind
+    setlocal scrollbind
+    setlocal buftype=nofile
+    setlocal bufhidden=wipe
+    setlocal noswapfile
+    setlocal nobuflisted
+    setlocal nomodified
+    setlocal nolist
+
+    let cmd = "git blame -c ".expand("#").' | sed -r ''s/^([0-9a-z^]+)\s+(\(.*)\s+[0-9]+\).*$/\1 \2)/'''
+    let blame = system(cmd)
+    let width = system("echo '".blame."' | wc -L | tr -d '\n'")
+
+    silent 0put=blame
+    execute "normal! Gdd"
+    setlocal noma
+
+    silent call winrestview(pos)
+    execute "normal! g0"
+    exec width."wincmd |"
+    syncbind
 endfunction
 
 function! gitme#files()
@@ -23,7 +55,7 @@ function! gitme#files()
     endif
 
     let l:cmd = "git ls-files -oc --exclude-standard | uniq 2> /dev/null"
-    return split(system(l:cmd), "\n")
+    return systemlist(l:cmd)
 endfunction
 
 " worktree list (does not return the current wt)
@@ -31,7 +63,7 @@ function! gitme#wtl()
     let l:root = gitme#root()
     let l:cmd = "git worktree list 2> /dev/null"
 
-    let l:wtrees = split(system(l:cmd), "\n")
+    let l:wtrees = systemlist(l:cmd)
     return filter(l:wtrees, "len(v:val) >= 3")
 endfunction
 

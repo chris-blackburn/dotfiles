@@ -205,7 +205,7 @@ function! _GitGrep(pattern)
 endfunction
 
 command! -nargs=1 GitGrep call _GitGrep(<q-args>)
-nnoremap <leader>vg :GitGrep 
+nnoremap <leader>gg :GitGrep 
 
 " For autocompletion
 set omnifunc=syntaxcomplete#Complete
