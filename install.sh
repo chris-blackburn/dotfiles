@@ -22,6 +22,8 @@ for file in "${files[@]}"; do
 done
 
 git config --global core.excludesfile ~/.gitignore
+git config --global core.filemode false
+git config --global core.pager 'less -F -X'
 git config --global merge.tool vimdiff
 git config --global alias.co checkout
 git config --global alias.wt worktree

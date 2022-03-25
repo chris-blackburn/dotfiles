@@ -7,7 +7,7 @@ function! gitme#root()
 endfunction
 
 function! gitme#branch()
-    let cmd = 'git rev-parse --abbrev-ref HEAD 2> /dev/null'
+    let cmd = 'git branch --show-current 2> /dev/null'
     return trim(system(cmd))
 endfunction
 
@@ -54,7 +54,7 @@ function! gitme#files()
         return []
     endif
 
-    let cmd = "git ls-files -oc --exclude-standard | uniq 2> /dev/null"
+    let cmd = "git ls-files ".gitme#root()." --full-name -oc --exclude-standard | uniq | sort 2> /dev/null"
     return systemlist(cmd)
 endfunction
 
