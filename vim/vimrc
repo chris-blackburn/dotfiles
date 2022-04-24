@@ -185,35 +185,6 @@ nnoremap <silent> <leader>b :call gitme#blame()<CR>
 nnoremap <C-j> :cn<CR>
 nnoremap <C-k> :cp<CR>
 
-" vimgrep git files given a pattern
-function! _GitGrep(pattern)
-    function! _filter(path)
-        if isdirectory(a:path) || !filereadable(a:path)
-            return 0
-        endif
-
-        return 1
-    endfunction
-
-    let l:files = filter(gitme#files(), "_filter('".gitme#root()."/'.v:val)")
-
-    try
-        exec "vimgrep /".a:pattern."/g ".join(l:files, " ")
-    catch /.*/
-        echo v:exception
-    endtry
-endfunction
-
-command! -nargs=1 GitGrep call _GitGrep(<q-args>)
-nnoremap <leader>gg :GitGrep 
-
-" For autocompletion
-set omnifunc=syntaxcomplete#Complete
-set completeopt=longest,menuone
-inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "<Tab>"
-inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
-  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-
 " Took this from racer-rust/vim-racer to wrap some cscope commands that don't
 " add to the tag stack. You can use it to wrap pretty much any command with tag
 " stacking
@@ -242,6 +213,37 @@ else
     function! TagPost()
     endfunction
 endif
+
+" vimgrep git files given a pattern
+function! _GitGrep(pattern)
+    function! _filter(path)
+        if isdirectory(a:path) || !filereadable(a:path)
+            return 0
+        endif
+
+        return 1
+    endfunction
+
+    let l:files = filter(gitme#files(), "_filter('".gitme#root()."/'.v:val)")
+
+    call TagPre()
+    try
+        exec "vimgrep /".a:pattern."/g ".join(l:files, " ")
+    catch /.*/
+        echo v:exception
+    endtry
+    call TagPost()
+endfunction
+
+command! -nargs=1 GitGrep call _GitGrep(<q-args>)
+nnoremap <leader>vg :GitGrep 
+
+" For autocompletion
+set omnifunc=syntaxcomplete#Complete
+set completeopt=longest,menuone
+inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "<Tab>"
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 
 if has('cscope')
     set cscopeverbose
