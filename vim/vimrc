@@ -31,6 +31,7 @@ filetype plugin on
 syntax on
 
 let g:netrw_banner=0
+let g:netrw_altv=1
 
 " TODO: update my fork of gutentags to better support cscope
 let g:gutentags_modules = ["ctags"]
@@ -52,8 +53,6 @@ set backupdir=~/.vim/.backup,/tmp
 " I don't want mouse
 set mouse=
 set ttymouse=
-
-set dictionary=/usr/share/dict/words
 
 " Template files
 autocmd BufNewFile *.c,*.cpp 0r ~/.vim/templates/template.c
@@ -87,7 +86,7 @@ hi CursorLine term=bold cterm=bold ctermbg=236
 set cursorline
 
 hi ColorColumn ctermbg=240
-set tw=80
+set tw=79
 set cc=+1
 
 " Branch name in the status line
@@ -102,9 +101,6 @@ endfunction
 " Configure lightline
 let g:lightline = {
   \ 'colorscheme': 'seoul256',
-  \ 'component_function': {
-  \   'gitbranch': 'LightlineGitbranch'
-  \ },
   \ 'component': {
   \   'readonly': '%{&readonly?"":""}'
   \ },
@@ -179,7 +175,8 @@ nnoremap <silent> <leader>= :wincmd =<CR>
 
 nnoremap <silent> <leader>6 <C-^>
 
-nnoremap <silent> <leader>b :call gitme#blame()<CR>
+nnoremap <leader>b :echo gitme#smallblame()<CR>
+nnoremap <silent> <leader>B :Git blame<CR>
 
 " quickfix navigation
 nnoremap <C-j> :cn<CR>
@@ -282,13 +279,7 @@ if has('cscope')
             return
         endif
 
-        let root = gitme#root()
-        if !empty(root)
-            let db = findfile("/cscope.out", root)
-        else
-            let db = findfile("cscope.out", ".;")
-        endif
-
+        let db = findfile("cscope.out", ".;")
         if (!empty(db))
             let path = strpart(db, 0, match(db, "/cscope.out$"))
             set nocscopeverbose " suppress 'duplicate connection' error
