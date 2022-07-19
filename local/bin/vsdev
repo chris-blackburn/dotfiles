@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Open the vs dev shell from within WSL
+
+# Needs the ps1 file next to this file
+dirme=$(realpath $(dirname -- $0))
+ps1=$(wslpath -a -m $dirme/vsdevshell.ps1)
+
+powershell.exe -ExecutionPolicy Bypass -NoLogo -NoExit -File $ps1 $@

@@ -2,7 +2,7 @@
 
 set -e
 
-_root=$(realpath $(dirname "$0"))
+_root=$(realpath $(dirname -- "$0"))
 
 git submodule update --init || (echo "Failed to initialize submodules"; exit 1)
 
@@ -19,12 +19,18 @@ files=(
     "ctags"
     "fzf"
     "gdbinit"
+    "local"
 )
 
 for file in "${files[@]}"; do
-    cmd="ln -s '$_root/$file' ~/.'$file'"
-    echo "$cmd"
-    eval "$cmd"
+    tgt="~/.${file}"
+    if [[ -e $tgt ]]; then
+        cmd="ln -s '$_root/$file' '$tgt'"
+        echo "$cmd"
+        eval "$cmd"
+    else
+        echo "already exists: '$tgt'"
+    fi
 done
 
 git config --global core.excludesfile ~/.gitignore
@@ -37,7 +43,7 @@ git config --global alias.wt worktree
 # Create promptline and tmuxline files for nice styling (based on vimrc theme).
 # This has to be done in a tmux session or else the tmuxline command won't
 # work.
-tmux new-session -d -s "dotfiles-tmp" ./$_root/makeprompt.sh
+tmux new-session -d ./$_root/makeprompt.sh
 
 # Download a patched font
 curl -Lso $_root/font.ttf https://github.com/powerline/fonts/raw/master/DejaVuSansMono/DejaVu%20Sans%20Mono%20for%20Powerline.ttf
