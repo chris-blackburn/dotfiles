@@ -8,7 +8,6 @@ set rtp+=~/.fzf
 set encoding=utf-8
 
 set noshowmode
-set nofixendofline
 set sessionoptions-=options
 set noerrorbells visualbell
 set ignorecase
@@ -18,14 +17,11 @@ set wildmenu
 set nowrap
 set autoindent smartindent expandtab tabstop=4 softtabstop=4 shiftwidth=4
 set nolazyredraw
-set ttyfast
 set splitright
 set nojoinspaces
 
 " Vim can recognize files and can load plugins
-filetype on
-filetype indent on
-filetype plugin on
+filetype plugin indent on
 
 " pretty much always want Syntax highlighting
 syntax on
@@ -47,12 +43,17 @@ let g:gutentags_cscope_build_inverted_index = 0
 let g:fzf_layout = { 'down': '10' }
 
 " Set the swap and backup dir to something not annoying
-set directory=~/.vim/.swp,/tmp
-set backupdir=~/.vim/.backup,/tmp
+set directory=~/.vim/.swp//,/tmp//
+set backupdir=~/.vim/.backup//,/tmp//
 
 " I don't want mouse
 set mouse=
-set ttymouse=
+if !has('nvim')
+    set ttymouse=
+    set ttyfast
+else
+    nnoremap Y yy
+endif
 
 " Template files
 autocmd BufNewFile *.c,*.cpp 0r ~/.vim/templates/template.c
@@ -88,15 +89,6 @@ set cursorline
 hi ColorColumn ctermbg=240
 set tw=79
 set cc=+1
-
-" Branch name in the status line
-function! LightlineGitbranch()
-    let l:branch = gitme#branch()
-    if len(branch) != 0 && winwidth(0) > 80
-        return ' ' . branch
-    endif
-    return ''
-endfunction
 
 " Configure lightline
 let g:lightline = {
@@ -182,6 +174,33 @@ nnoremap <silent> <leader>B :Git blame<CR>
 nnoremap <C-j> :cn<CR>
 nnoremap <C-k> :cp<CR>
 
+" Leave paste mode after leaving insert mode
+au InsertLeave /* :set nopaste
+
+" Mimics tmux's zoom-pane functionality where we can toggle zoom on a single
+" pane without closing other panes. works per vim tab.
+function! ZoomPane()
+    if 1 == winnr('$')
+        return
+    endif
+
+    let restorecmd = winrestcmd()
+
+    wincmd |
+    wincmd _
+
+    " If the restore command didn't change after focusing on this pane, then we
+    " were already zoomed and have to restore the original alyout. Otherwise,
+    " store the zoom restore command for later
+    if restorecmd ==# winrestcmd()
+        exe t:restore
+        return
+    else
+        let t:restore = restorecmd
+    endif
+endfunction
+nnoremap <expr> <leader>o ZoomPane()
+
 " Took this from racer-rust/vim-racer to wrap some cscope commands that don't
 " add to the tag stack. You can use it to wrap pretty much any command with tag
 " stacking
@@ -210,37 +229,6 @@ else
     function! TagPost()
     endfunction
 endif
-
-" vimgrep git files given a pattern
-function! _GitGrep(pattern)
-    function! _filter(path)
-        if isdirectory(a:path) || !filereadable(a:path)
-            return 0
-        endif
-
-        return 1
-    endfunction
-
-    let l:files = filter(gitme#files(), "_filter('".gitme#root()."/'.v:val)")
-
-    call TagPre()
-    try
-        exec "vimgrep /".a:pattern."/g ".join(l:files, " ")
-    catch /.*/
-        echo v:exception
-    endtry
-    call TagPost()
-endfunction
-
-command! -nargs=1 GitGrep call _GitGrep(<q-args>)
-nnoremap <leader>vg :GitGrep 
-
-" For autocompletion
-set omnifunc=syntaxcomplete#Complete
-set completeopt=longest,menuone
-inoremap <expr> <Tab> pumvisible() ? "\<C-y>" : "<Tab>"
-inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
-  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 
 if has('cscope')
     set cscopeverbose
@@ -304,54 +292,3 @@ function! CtrlP()
     endif
 endfunction
 nnoremap <silent> <C-p> :call CtrlP()<CR>
-
-" Select and switch to another worktree
-function! WTDo(op) abort
-    let l:root = gitme#root()
-    if empty(root)
-        return
-    endif
-
-    if a:op == "switch"
-        let l:Op = function('gitme#wts')
-    elseif a:op == "delete"
-        let l:Op = function('gitme#wtd')
-    else
-        return
-    endif
-
-    let s:opts = {
-        \ 'source': gitme#wtl(),
-        \ 'dir': l:root,
-        \ 'options': '--prompt "'.a:op.' worktree> "',
-        \ 'sink': l:Op,
-        \ 'down': 10
-        \}
-    call fzf#run(s:opts)
-endfunction
-nnoremap <silent> <leader>ws :call WTDo("switch")<CR>
-nnoremap <silent> <leader>wd :call WTDo("delete")<CR>
-
-" Mimics tmux's zoom-pane functionality where we can toggle zoom on a single
-" pane without closing other panes. works per vim tab.
-function! ZoomPane()
-    if 1 == winnr('$')
-        return
-    endif
-
-    let restorecmd = winrestcmd()
-
-    wincmd |
-    wincmd _
-
-    " If the restore command didn't change after focusing on this pane, then we
-    " were already zoomed and have to restore the original alyout. Otherwise,
-    " store the zoom restore command for later
-    if restorecmd ==# winrestcmd()
-        exe t:restore
-        return
-    else
-        let t:restore = restorecmd
-    endif
-endfunction
-nnoremap <expr> <leader>o ZoomPane()

@@ -2,5 +2,9 @@ alias ls="ls --color=auto"
 alias ll="ls -l"
 alias la="ll -a"
 alias vi="vim"
+alias vim="nvim"
 alias tmux="tmux -2u"
 alias svim="sudo -E vim"
+
+# fuzzy find a project to open with tmux
+bindkey -s '^F' "tmux-oproj^M"

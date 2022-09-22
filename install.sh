@@ -8,6 +8,7 @@ git submodule update --init || (echo "Failed to initialize submodules"; exit 1)
 
 # Some fancy GDB nonsense
 wget -qN https://git.io/.gdbinit -O $_root/gdbinit
+curl -Lso $_root/lldbinit https://github.com/gdbinit/lldbinit/blob/master/lldbinit.py
 
 files=(
     "zshrc"
@@ -18,8 +19,9 @@ files=(
     "vim"
     "ctags"
     "fzf"
+    "config"
     "gdbinit"
-    "local"
+    "lldbinit"
 )
 
 for file in "${files[@]}"; do
@@ -33,8 +35,15 @@ for file in "${files[@]}"; do
     fi
 done
 
+# Link additional bins
+tgt="~/.dotbin"
+mkdir -p $(dirname -- $tgt)
+if [[ -e $tgt ]]; then
+    cmd="ln -s '$_root/bin' '$tgt'"
+    eval "$cmd"
+fi
+
 git config --global core.excludesfile ~/.gitignore
-git config --global core.filemode false
 git config --global core.pager 'less -F -X'
 git config --global merge.tool vimdiff
 git config --global alias.co checkout
@@ -46,7 +55,9 @@ git config --global alias.wt worktree
 tmux new-session -d ./$_root/makeprompt.sh
 
 # Download a patched font
-curl -Lso $_root/font.ttf https://github.com/powerline/fonts/raw/master/DejaVuSansMono/DejaVu%20Sans%20Mono%20for%20Powerline.ttf
+if [[ ! -f $_root/font.ttf ]]; then
+    curl -Lso $_root/font.ttf https://github.com/powerline/fonts/raw/master/DejaVuSansMono/DejaVu%20Sans%20Mono%20for%20Powerline.ttf
+fi
 
 # Install fzf
 source $_root/fzf/install --completion --key-bindings --no-bash --no-fish --no-update-rc

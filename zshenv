@@ -1,9 +1,9 @@
 export TERM="xterm-256color"
 export EDITOR=vim
 export VISUAL=$EDITOR
-export LESS="$LESS -R -Q -I"
+export LESS="$LESS -R -Q"
 
-export PATH=~/.local/bin:$PATH
+export PATH=~/.dotbin:$PATH
 
 # This is supposed to make the right prompt flush against
 # the terminal, but it breaks the prompt.

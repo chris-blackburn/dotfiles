@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# fuzzy search listed directories for projects, open tmux sessions for them
+dirs=(
+    "~"
+)
+
+cmd="find ${dirs[@]} -mindepth 1 -maxdepth 1 -type d -print | fzf"
+proj=$(eval $cmd)
+
+if [[ -z "$proj" ]]; then
+    exit 0
+fi
+
+# Gen session name
+session=$(basename -- $proj | sed 's/\./-dot-/g')
+
+# find/create session
+tmux has-session -t $session 2> /dev/null
+if [[ $? != 0 ]]; then
+    tmux new-session -s $session -c $proj -d
+
+    tmux rename-window -t "$session:0" "dev"
+    if [[ -f "$proj/Session.vim" ]]; then
+        tmux send-keys -t "$session:dev" "vim -S Session.vim" "C-M"
+    fi
+fi
+
+# attach
+[[ -n ${TMUX:-} ]] && tmux switch-client -t $session || tmux attach -t $session
