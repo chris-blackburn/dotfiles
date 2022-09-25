@@ -22,11 +22,12 @@ files=(
     "config"
     "gdbinit"
     "lldbinit"
+    "dotbin"
 )
 
 for file in "${files[@]}"; do
-    tgt="~/.${file}"
-    if [[ -e $tgt ]]; then
+    tgt="${HOME}/.${file}"
+    if [[ ! -e $tgt ]]; then
         cmd="ln -s '$_root/$file' '$tgt'"
         echo "$cmd"
         eval "$cmd"
@@ -35,15 +36,7 @@ for file in "${files[@]}"; do
     fi
 done
 
-# Link additional bins
-tgt="~/.dotbin"
-mkdir -p $(dirname -- $tgt)
-if [[ -e $tgt ]]; then
-    cmd="ln -s '$_root/bin' '$tgt'"
-    eval "$cmd"
-fi
-
-git config --global core.excludesfile ~/.gitignore
+git config --global core.excludesfile ${HOME}/.gitignore
 git config --global core.pager 'less -F -X'
 git config --global merge.tool vimdiff
 git config --global alias.co checkout
@@ -59,8 +52,8 @@ if [[ ! -f $_root/font.ttf ]]; then
     curl -Lso $_root/font.ttf https://github.com/powerline/fonts/raw/master/DejaVuSansMono/DejaVu%20Sans%20Mono%20for%20Powerline.ttf
 fi
 
-# Install fzf
-source $_root/fzf/install --completion --key-bindings --no-bash --no-fish --no-update-rc
+# Install fzf (if not already installed)
+(which fzf >/dev/null && source $_root/fzf/install --completion --key-bindings --no-bash --no-fish --no-update-rc)
 
 echo "Changing shell to zsh"
 (which zsh >/dev/null && chsh -s $(which zsh)) || (echo "Couldn't change shell to zsh (is it installed?)")

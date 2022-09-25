@@ -48,11 +48,11 @@ set backupdir=~/.vim/.backup//,/tmp//
 
 " I don't want mouse
 set mouse=
+
+" Might be moving to nvim since clipboard support just kinda works...
 if !has('nvim')
     set ttymouse=
     set ttyfast
-else
-    nnoremap Y yy
 endif
 
 " Template files
@@ -67,10 +67,6 @@ autocmd BufNewFile Makefile 0r ~/.vim/templates/Makefile
 " use "set list" to turn on and "set nolist" to turn off
 set listchars=tab:»\ ,trail:-
 set list
-
-" For project-specific vimrc
-set exrc
-set secure
 
 " Visuals
 set laststatus=2
@@ -136,6 +132,8 @@ vnoremap C "_C
 
 " Don't put what I just pasted over into the copy buffer
 xnoremap p "_dP
+
+nnoremap Y yy
 
 nnoremap - <Nop>
 nnoremap + <Nop>
@@ -292,3 +290,18 @@ function! CtrlP()
     endif
 endfunction
 nnoremap <silent> <C-p> :call CtrlP()<CR>
+
+" Wrapper for my tmux project opener script
+function! TmuxSwitchProject()
+    let s:opts = {
+        \ 'source': systemlist("tmux-oproj -l"),
+        \ 'options': '--prompt "tmux-oproj> "',
+        \ 'sink': 'silent !tmux-oproj'
+        \}
+    call fzf#run(fzf#wrap(s:opts))
+endfunction
+nnoremap <silent> <C-f> :call TmuxSwitchProject()<CR>
+
+" For project-specific vimrc
+set exrc
+set secure
