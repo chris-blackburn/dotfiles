@@ -298,9 +298,21 @@ function! TmuxSwitchProject()
         \ 'options': '--prompt "tmux-oproj> "',
         \ 'sink': 'silent !tmux-oproj'
         \}
-    call fzf#run(fzf#wrap(s:opts))
+    call fzf#run(s:opts)
 endfunction
 nnoremap <silent> <C-f> :call TmuxSwitchProject()<CR>
+
+" Wrapper for creating/deleting worktrees
+function! WTCreate() abort
+    let l:root = gitme#root()
+    if empty(root)
+        return
+    endif
+
+    let l:wtname = input("worktree-create: ")
+    silent! execute "!wtorg -c ".l:wtname
+endfunction
+nnoremap <silent> <leader>wc :call WTCreate()<CR>
 
 " For project-specific vimrc
 set exrc

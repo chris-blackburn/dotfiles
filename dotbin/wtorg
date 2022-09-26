@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# Wrapper for git worktree, integrate with fzf
+proj=$(git rev-parse --show-toplevel 2> /dev/null)
+if [[ -z "$proj" ]]; then
+    exit 1
+fi
+
+name=$(basename $proj)
+
+function usage() {
+    echo "Create, delete, and navigate git worktrees"
+    echo "usage: [-hcds] [subname] [ref]"
+    echo "    -h Display this help"
+    echo "    -c Create worktree named <current project>-subname"
+    echo "    -d Delete worktree named <current project>-subname"
+    echo "    -s Switch to worktree named <current project>-subname"
+    echo
+    echo "    Call this within a git project repo"
+    echo
+    echo "    Worktrees are created next to the current project's root dir"
+    echo
+    echo "    If no directory is specified, fuzzy select will be used when"
+    echo "    deleting or switching worktrees"
+    echo
+    echo "    If no ref is specified, '--detach' will be used when creating a"
+    echo "    worktree"
+    echo
+    echo "Example:"
+    echo "    $ some-project> tmux-worktree -c asdf --detach"
+    echo "    $ some-project> ls .."
+    echo "      some-project some-project-asdf"
+    exit 0
+}
+
+while getopts cdsh opt; do
+    case $opt in
+        c)
+            docreate=1
+            ;;
+        d)
+            dodelete=1
+            ;;
+        s)
+            doswitch=1
+            ;;
+        h | *)
+            dousage=1
+            break
+            ;;
+    esac
+done
+
+if [[ ! -z $dousage ]]; then
+    usage
+fi
+
+shift $((OPTIND - 1))
+subname=$1
+ref=${2:-"--detach"}
+
+export FZF_DEFAULT_OPTS="--prompt='wtorg> ' $FZF_DEFAULT_OPTS"
+
+# prio -> create, delete, switch
+
+if [[ ! -z $docreate ]]; then
+    if [[ -z $subname ]]; then
+        echo "You must provide a worktree name with '-c'"
+        exit 1
+    fi
+
+    wtproj="${proj}-$subname"
+    cmd="git worktree add $wtproj $ref"
+    echo $cmd
+    eval $cmd
+    exit $?
+fi
+
+if [[ ! -z $dodelete ]]; then
+    if [[ -z $subname ]]; then
+        worktrees=( $(git worktree list | fzf -m | awk '{print $1}') )
+        if [[ -z $worktrees ]]; then
+            exit 0
+        fi
+    else
+        worktrees=( "${proj}-$subname" )
+    fi
+
+    for worktree in "${worktrees[@]}"; do
+        cmd="git worktree remove '${worktree}'"
+        echo $cmd
+        eval $cmd
+    done
+    exit $?
+fi
+
+if [[ ! -z $doswitch ]]; then
+    worktree=$(git worktree list | fzf | awk '{print $1}')
+    if [[ -z $worktree ]]; then
+        exit 0
+    fi
+
+    tmux-oproj $worktree
+    exit $?
+fi
+
+usage
