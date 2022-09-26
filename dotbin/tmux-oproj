@@ -32,7 +32,7 @@ function tmux_open() {
     [[ -n ${TMUX:-} ]] && tmux switch-client -t $session || tmux attach -t $session
 }
 
-cmd="find ${dirs[@]} -mindepth 1 -maxdepth 1 -type d -print 2> /dev/null"
+cmd="find -L ${dirs[@]} -mindepth 1 -maxdepth 1 -path '*/\.*' -prune -o -type d -print 2> /dev/null"
 while getopts l opt; do
     case $opt in
         l)
