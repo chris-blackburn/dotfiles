@@ -294,9 +294,9 @@ nnoremap <silent> <C-p> :call CtrlP()<CR>
 " Wrapper for my tmux project opener script
 function! TmuxSwitchProject()
     let s:opts = {
-        \ 'source': systemlist("tmux-oproj -l"),
-        \ 'options': '--prompt "tmux-oproj> "',
-        \ 'sink': 'silent !tmux-oproj'
+        \ 'source': systemlist("to -l"),
+        \ 'options': '--prompt "to> "',
+        \ 'sink': 'silent !to'
         \}
     call fzf#run(s:opts)
 endfunction

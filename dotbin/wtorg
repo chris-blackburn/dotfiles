@@ -59,7 +59,7 @@ shift $((OPTIND - 1))
 subname=$1
 ref=${2:-"--detach"}
 
-export FZF_DEFAULT_OPTS="--prompt='wtorg> ' $FZF_DEFAULT_OPTS"
+export FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --prompt='wtorg> ' $FZF_DEFAULT_OPTS"
 
 # prio -> create, delete, switch
 
@@ -100,7 +100,7 @@ if [[ ! -z $doswitch ]]; then
         exit 0
     fi
 
-    tmux-oproj $worktree
+    to $worktree
     exit $?
 fi
 

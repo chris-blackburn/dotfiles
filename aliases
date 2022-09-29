@@ -7,22 +7,23 @@ alias tmux="tmux -2u"
 alias svim="sudo -E vim"
 
 # fuzzy find a project to open with tmux
-function __tmux_oproj() {
-    tmux-oproj
-    local ret=$?
-    zle reset-prompt
-    return $ret
-}
-zle -N __tmux_oproj
-bindkey '^F' __tmux_oproj
+#function __tmux_oproj() {
+#    to
+#    local ret=$?
+#    #zle reset-prompt
+#    return $ret
+#}
+#zle -N __tmux_oproj
+#bindkey '^F' __tmux_oproj
+bindkey -s '^F' "to^M"
 
 # helpers for worktrees
-function __wtorg () {
-    FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse $FZF_DEFAULT_OPTS" wtorg -s
-    local ret=$?
-    zle reset-prompt
-    return $ret
-}
-zle -N __wtorg
-bindkey '\ef' __wtorg
+#function __wtorg () {
+#    local ret=$?
+#    zle reset-prompt
+#    return $ret
+#}
+#zle -N __wtorg
+#bindkey '\ef' __wtorg
+bindkey -s '\ef' "wtorg -s^M"
 
